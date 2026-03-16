@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useBatchStore } from '../store/batchStore'
+import { outputBaseURL } from '../api/client'
 import type { SSEEvent, BatchJobResult } from '../types'
 
 export function useBatchSSE(batchId: string | null) {
@@ -9,7 +10,7 @@ export function useBatchSSE(batchId: string | null) {
   useEffect(() => {
     if (!batchId) return
 
-    const es = new EventSource(`/api/batch/${batchId}/stream`)
+    const es = new EventSource(`${outputBaseURL}/api/batch/${batchId}/stream`)
 
     es.onmessage = (e) => {
       try {
