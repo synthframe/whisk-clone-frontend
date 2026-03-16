@@ -25,7 +25,7 @@ export function SlotCard({ type }: Props) {
   const setSlot = useSlotStore((s) => s.setSlot)
   const { upload, clearSlot } = useSlotUpload()
   const inputRef = useRef<HTMLInputElement>(null)
-  const [inputMode, setInputMode] = useState<'image' | 'text'>('image')
+  const [inputMode, setInputMode] = useState<'image' | 'text'>('text')
 
   const handleFile = (file: File) => {
     upload(type, file)
