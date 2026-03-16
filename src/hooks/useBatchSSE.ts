@@ -5,23 +5,36 @@ import { outputBaseURL } from '../api/client'
 import type { SSEEvent, BatchJobResult } from '../types'
 
 async function downloadAllAsZip(imageUrls: string[], batchId: string) {
+  console.log('[zip] starting download, urls:', imageUrls)
   const zip = new JSZip()
   await Promise.all(
     imageUrls.map(async (url, i) => {
-      const res = await fetch(`${outputBaseURL}${url}`)
-      const blob = await res.blob()
-      zip.file(`image_${String(i + 1).padStart(3, '0')}.png`, blob)
+      try {
+        const fullUrl = `${outputBaseURL}${url}`
+        console.log('[zip] fetching', fullUrl)
+        const res = await fetch(fullUrl)
+        if (!res.ok) {
+          console.error('[zip] fetch failed', res.status, fullUrl)
+          return
+        }
+        const blob = await res.blob()
+        console.log('[zip] fetched blob size', blob.size, 'for', url)
+        zip.file(`image_${String(i + 1).padStart(3, '0')}.png`, blob)
+      } catch (e) {
+        console.error('[zip] fetch error for', url, e)
+      }
     })
   )
   const content = await zip.generateAsync({ type: 'blob' })
-  const url = URL.createObjectURL(content)
+  console.log('[zip] zip size', content.size)
+  const blobUrl = URL.createObjectURL(content)
   const a = document.createElement('a')
-  a.href = url
+  a.href = blobUrl
   a.download = `batch_${batchId.slice(0, 8)}.zip`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 1000)
 }
 
 export function useBatchSSE(batchId: string | null) {
@@ -59,12 +72,16 @@ export function useBatchSSE(batchId: string | null) {
         } else if (event.type === 'batch_completed') {
           updateJob(batchId, { status: 'completed' })
           es.close()
-          const completedResults = useBatchStore.getState().jobs
-            .find(j => j.batchId === batchId)?.results
+          const allResults = useBatchStore.getState().jobs.find(j => j.batchId === batchId)?.results ?? []
+          console.log('[zip] batch_completed, all results:', allResults)
+          const completedResults = allResults
             .filter(r => r.status === 'completed' && r.image_url)
-            .map(r => r.image_url!) ?? []
+            .map(r => r.image_url!)
+          console.log('[zip] completedResults:', completedResults)
           if (completedResults.length > 0) {
-            downloadAllAsZip(completedResults, batchId)
+            downloadAllAsZip(completedResults, batchId).catch(e => console.error('[zip] download error:', e))
+          } else {
+            console.warn('[zip] no completed results to download')
           }
         }
       } catch {
