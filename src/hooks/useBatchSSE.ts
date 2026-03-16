@@ -5,28 +5,20 @@ import { outputBaseURL } from '../api/client'
 import type { SSEEvent, BatchJobResult } from '../types'
 
 async function downloadAllAsZip(imageUrls: string[], batchId: string) {
-  console.log('[zip] starting download, urls:', imageUrls)
   const zip = new JSZip()
   await Promise.all(
     imageUrls.map(async (url, i) => {
       try {
-        const fullUrl = `${outputBaseURL}${url}`
-        console.log('[zip] fetching', fullUrl)
-        const res = await fetch(fullUrl)
-        if (!res.ok) {
-          console.error('[zip] fetch failed', res.status, fullUrl)
-          return
-        }
+        const res = await fetch(`${outputBaseURL}${url}`)
+        if (!res.ok) return
         const blob = await res.blob()
-        console.log('[zip] fetched blob size', blob.size, 'for', url)
         zip.file(`image_${String(i + 1).padStart(3, '0')}.png`, blob)
-      } catch (e) {
-        console.error('[zip] fetch error for', url, e)
+      } catch {
+        // skip failed images
       }
     })
   )
   const content = await zip.generateAsync({ type: 'blob' })
-  console.log('[zip] zip size', content.size)
   const blobUrl = URL.createObjectURL(content)
   const a = document.createElement('a')
   a.href = blobUrl
@@ -72,16 +64,12 @@ export function useBatchSSE(batchId: string | null) {
         } else if (event.type === 'batch_completed') {
           updateJob(batchId, { status: 'completed' })
           es.close()
-          const allResults = useBatchStore.getState().jobs.find(j => j.batchId === batchId)?.results ?? []
-          console.log('[zip] batch_completed, all results:', allResults)
-          const completedResults = allResults
+          const completedResults = useBatchStore.getState().jobs
+            .find(j => j.batchId === batchId)?.results
             .filter(r => r.status === 'completed' && r.image_url)
-            .map(r => r.image_url!)
-          console.log('[zip] completedResults:', completedResults)
+            .map(r => r.image_url!) ?? []
           if (completedResults.length > 0) {
-            downloadAllAsZip(completedResults, batchId).catch(e => console.error('[zip] download error:', e))
-          } else {
-            console.warn('[zip] no completed results to download')
+            downloadAllAsZip(completedResults, batchId).catch(() => {})
           }
         }
       } catch {
