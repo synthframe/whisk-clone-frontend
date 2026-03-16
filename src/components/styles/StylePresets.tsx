@@ -22,8 +22,8 @@ export function StylePresets() {
           onClick={() => setPreset(selectedPreset === p.value ? '' : p.value)}
           className={`px-3 py-1.5 text-xs font-mono font-medium transition-all uppercase tracking-widest border
             ${selectedPreset === p.value
-              ? 'bg-white text-black border-white'
-              : 'border-white/20 text-white/70 hover:bg-white hover:text-black hover:border-white'}`}
+              ? 'bg-black text-black border-white'
+              : 'border-black/20 text-black/70 hover:bg-white hover:text-black hover:border-white'}`}
         >
           {p.label}
         </button>

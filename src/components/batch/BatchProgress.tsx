@@ -9,18 +9,18 @@ export function BatchProgress({ completed, failed, total }: Props) {
 
   return (
     <div className="space-y-1">
-      <div className="flex justify-between text-xs text-white/50 font-mono">
+      <div className="flex justify-between text-xs text-black/50 font-mono">
         <span>{completed} completed · {failed} failed</span>
         <span>{pct}%</span>
       </div>
-      <div className="h-1.5 border border-white/10 overflow-hidden">
+      <div className="h-1.5 border border-black/10 overflow-hidden">
         <div className="h-full flex">
           <div
-            className="bg-white transition-all duration-300"
+            className="bg-black transition-all duration-300"
             style={{ width: `${total > 0 ? (completed / total) * 100 : 0}%` }}
           />
           <div
-            className="bg-white/30 transition-all duration-300"
+            className="bg-black/30 transition-all duration-300"
             style={{ width: `${total > 0 ? (failed / total) * 100 : 0}%` }}
           />
         </div>
