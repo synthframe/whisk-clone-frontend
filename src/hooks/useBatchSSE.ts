@@ -3,11 +3,15 @@ import { useBatchStore } from '../store/batchStore'
 import { outputBaseURL } from '../api/client'
 import type { SSEEvent, BatchJobResult } from '../types'
 
-function autoDownload(imageUrl: string, filename: string) {
+async function autoDownload(imageUrl: string, filename: string) {
+  const res = await fetch(`${outputBaseURL}${imageUrl}`)
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
-  a.href = `${outputBaseURL}${imageUrl}`
+  a.href = url
   a.download = filename
   a.click()
+  URL.revokeObjectURL(url)
 }
 
 export function useBatchSSE(batchId: string | null) {
