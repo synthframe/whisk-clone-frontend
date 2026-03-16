@@ -1,17 +1,24 @@
 import { useEffect } from 'react'
+import JSZip from 'jszip'
 import { useBatchStore } from '../store/batchStore'
 import { outputBaseURL } from '../api/client'
 import type { SSEEvent, BatchJobResult } from '../types'
 
-async function autoDownload(imageUrl: string, filename: string) {
-  const res = await fetch(`${outputBaseURL}${imageUrl}`)
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
+async function downloadAllAsZip(imageUrls: string[], batchId: string) {
+  const zip = new JSZip()
+  await Promise.all(
+    imageUrls.map(async (url, i) => {
+      const res = await fetch(`${outputBaseURL}${url}`)
+      const blob = await res.blob()
+      zip.file(`image_${String(i + 1).padStart(3, '0')}.png`, blob)
+    })
+  )
+  const content = await zip.generateAsync({ type: 'blob' })
   const a = document.createElement('a')
-  a.href = url
-  a.download = filename
+  a.href = URL.createObjectURL(content)
+  a.download = `batch_${batchId.slice(0, 8)}.zip`
   a.click()
-  URL.revokeObjectURL(url)
+  URL.revokeObjectURL(a.href)
 }
 
 export function useBatchSSE(batchId: string | null) {
@@ -37,7 +44,6 @@ export function useBatchSSE(batchId: string | null) {
                 : r
             ) ?? [],
           })
-          autoDownload(payload.image_url, `batch_${batchId.slice(0, 8)}_${payload.index + 1}.png`)
         } else if (event.type === 'job_failed') {
           const payload = event.payload as { index: number; error: string }
           updateJob(batchId, {
@@ -50,6 +56,13 @@ export function useBatchSSE(batchId: string | null) {
         } else if (event.type === 'batch_completed') {
           updateJob(batchId, { status: 'completed' })
           es.close()
+          const completedResults = useBatchStore.getState().jobs
+            .find(j => j.batchId === batchId)?.results
+            .filter(r => r.status === 'completed' && r.image_url)
+            .map(r => r.image_url!) ?? []
+          if (completedResults.length > 0) {
+            downloadAllAsZip(completedResults, batchId)
+          }
         }
       } catch {
         // ignore parse errors
