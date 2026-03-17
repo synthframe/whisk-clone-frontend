@@ -1,20 +1,6 @@
 import { useSlotStore } from '../store/slotStore'
 import { useGenerateStore } from '../store/generateStore'
 import { generateImage, pollGenerateStatus } from '../api/generate'
-import { outputBaseURL } from '../api/client'
-
-async function autoDownload(imageUrl: string, filename: string) {
-  const res = await fetch(`${outputBaseURL}${imageUrl}`)
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
-}
 
 export function useGenerate() {
   const slots = useSlotStore((s) => s.slots)
@@ -34,13 +20,11 @@ export function useGenerate() {
       })
       setJobId(res.id)
 
-      // Poll until done
       const poll = async () => {
         const status = await pollGenerateStatus(res.id)
         if (status.status === 'completed' && status.image_url) {
           setResult(status.image_url)
           setGenerating(false)
-          autoDownload(status.image_url, `whisk_${res.id.slice(0, 8)}.png`)
         } else if (status.status === 'failed') {
           setError(status.error ?? 'Generation failed')
           setGenerating(false)

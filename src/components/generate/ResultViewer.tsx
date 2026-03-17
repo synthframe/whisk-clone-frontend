@@ -2,6 +2,19 @@ import { useGenerateStore } from '../../store/generateStore'
 import { LoadingSpinner } from '../shared/LoadingSpinner'
 import { outputBaseURL } from '../../api/client'
 
+async function downloadImage(imageUrl: string, filename: string) {
+  const res = await fetch(`${outputBaseURL}${imageUrl}`)
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
 export function ResultViewer() {
   const { generating, resultImageUrl, error } = useGenerateStore()
 
@@ -33,13 +46,12 @@ export function ResultViewer() {
   return (
     <div className="relative overflow-hidden aspect-square border-2 border-black">
       <img src={`${outputBaseURL}${resultImageUrl}`} alt="Generated" className="w-full h-full object-cover" />
-      <a
-        href={`${outputBaseURL}${resultImageUrl}`}
-        download
+      <button
+        onClick={() => downloadImage(resultImageUrl!, 'whisk.png')}
         className="absolute bottom-3 right-3 border-2 border-black bg-white text-black text-xs px-4 py-2 font-mono uppercase tracking-widest transition-all hover:bg-black hover:text-white font-bold"
       >
         Download
-      </a>
+      </button>
     </div>
   )
 }
