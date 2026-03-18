@@ -4,6 +4,7 @@ import { useGenerateStore } from '../../store/generateStore'
 import { useBatchStore } from '../../store/batchStore'
 import { createBatch } from '../../api/batch'
 import { BatchQueue } from './BatchQueue'
+import { RATIO_DIMENSIONS } from '../../types'
 import type { BatchJobInput, BatchJobResult } from '../../types'
 
 type Mode = 'slot' | 'direct'
@@ -18,6 +19,7 @@ function parsePrompts(text: string): string[] {
 export function BatchPanel() {
   const slots = useSlotStore((s) => s.slots)
   const selectedPreset = useGenerateStore((s) => s.selectedPreset)
+  const selectedRatio = useGenerateStore((s) => s.selectedRatio)
   const addJob = useBatchStore((s) => s.addJob)
   const [mode, setMode] = useState<Mode>('direct')
   const [count, setCount] = useState(3)
@@ -38,18 +40,24 @@ export function BatchPanel() {
           setLoading(false)
           return
         }
+        const { width, height } = RATIO_DIMENSIONS[selectedRatio]
         jobs = prompts.map((p) => ({
           subject_prompt: p,
           scene_prompt: slots.scene.prompt,
           style_prompt: slots.style.prompt,
           style_preset: selectedPreset,
+          width,
+          height,
         }))
       } else {
+        const { width, height } = RATIO_DIMENSIONS[selectedRatio]
         const baseJob: BatchJobInput = {
           subject_prompt: slots.subject.prompt,
           scene_prompt: slots.scene.prompt,
           style_prompt: slots.style.prompt,
           style_preset: selectedPreset,
+          width,
+          height,
         }
         jobs = Array.from({ length: count }, () => ({ ...baseJob }))
       }

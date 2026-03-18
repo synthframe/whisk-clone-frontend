@@ -1,13 +1,15 @@
 import { create } from 'zustand'
-import type { StylePreset } from '../types'
+import type { StylePreset, AspectRatio } from '../types'
 
 interface GenerateStore {
   selectedPreset: StylePreset | ''
+  selectedRatio: AspectRatio
   generating: boolean
   resultImageUrl: string | null
   jobId: string | null
   error: string | null
   setPreset: (preset: StylePreset | '') => void
+  setRatio: (ratio: AspectRatio) => void
   setGenerating: (v: boolean) => void
   setResult: (url: string | null) => void
   setJobId: (id: string | null) => void
@@ -16,11 +18,13 @@ interface GenerateStore {
 
 export const useGenerateStore = create<GenerateStore>((set) => ({
   selectedPreset: 'photorealistic',
+  selectedRatio: '1:1',
   generating: false,
   resultImageUrl: null,
   jobId: null,
   error: null,
   setPreset: (preset) => set({ selectedPreset: preset }),
+  setRatio: (ratio) => set({ selectedRatio: ratio }),
   setGenerating: (v) => set({ generating: v }),
   setResult: (url) => set({ resultImageUrl: url }),
   setJobId: (id) => set({ jobId: id }),

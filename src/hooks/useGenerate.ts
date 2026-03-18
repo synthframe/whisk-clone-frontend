@@ -1,10 +1,11 @@
 import { useSlotStore } from '../store/slotStore'
 import { useGenerateStore } from '../store/generateStore'
 import { generateImage, pollGenerateStatus } from '../api/generate'
+import { RATIO_DIMENSIONS } from '../types'
 
 export function useGenerate() {
   const slots = useSlotStore((s) => s.slots)
-  const { selectedPreset, setGenerating, setResult, setError, setJobId } = useGenerateStore()
+  const { selectedPreset, selectedRatio, setGenerating, setResult, setError, setJobId } = useGenerateStore()
 
   const generate = async () => {
     setGenerating(true)
@@ -12,11 +13,14 @@ export function useGenerate() {
     setResult(null)
 
     try {
+      const { width, height } = RATIO_DIMENSIONS[selectedRatio]
       const res = await generateImage({
         subject_prompt: slots.subject.prompt,
         scene_prompt: slots.scene.prompt,
         style_prompt: slots.style.prompt,
         style_preset: selectedPreset,
+        width,
+        height,
       })
       setJobId(res.id)
 
