@@ -8,6 +8,7 @@ export type StylePreset =
   | 'watercolor'
   | 'pixel_art'
   | 'sketched'
+  | 'pixar_3d'
 
 export interface AnalyzeResponse {
   prompt: string

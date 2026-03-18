@@ -9,6 +9,7 @@ const PRESETS: { value: StylePreset; label: string }[] = [
   { value: 'watercolor', label: 'Watercolor' },
   { value: 'pixel_art', label: 'Pixel Art' },
   { value: 'sketched', label: 'Sketch' },
+  { value: 'pixar_3d', label: '3D Pixar' },
 ]
 
 export function StylePresets() {
