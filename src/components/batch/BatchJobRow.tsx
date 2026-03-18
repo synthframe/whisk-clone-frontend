@@ -14,8 +14,8 @@ export function BatchJobRow({ job, index }: Props) {
       <span className="text-black/40 text-sm w-6 text-right font-mono font-bold">{index + 1}</span>
       <StatusBadge status={status} />
       {job.image_url ? (
-        <a href={`${outputBaseURL}${job.image_url}`} target="_blank" rel="noopener noreferrer">
-          <img src={`${outputBaseURL}${job.image_url}`} alt={`job-${index}`} className="w-12 h-12 object-cover border-2 border-black" />
+        <a href={`${outputBaseURL}${job.image_url}?t=${Date.now()}`} target="_blank" rel="noopener noreferrer">
+          <img src={`${outputBaseURL}${job.image_url}?t=${Date.now()}`} alt={`job-${index}`} className="w-12 h-12 object-cover border-2 border-black" />
         </a>
       ) : (
         <div className="w-12 h-12 border-2 border-black flex items-center justify-center">
