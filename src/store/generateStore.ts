@@ -6,6 +6,7 @@ interface GenerateStore {
   selectedRatio: AspectRatio
   generating: boolean
   resultImageUrl: string | null
+  resultTs: number
   jobId: string | null
   error: string | null
   setPreset: (preset: StylePreset | '') => void
@@ -21,12 +22,13 @@ export const useGenerateStore = create<GenerateStore>((set) => ({
   selectedRatio: '1:1',
   generating: false,
   resultImageUrl: null,
+  resultTs: 0,
   jobId: null,
   error: null,
   setPreset: (preset) => set({ selectedPreset: preset }),
   setRatio: (ratio) => set({ selectedRatio: ratio }),
   setGenerating: (v) => set({ generating: v }),
-  setResult: (url) => set({ resultImageUrl: url }),
+  setResult: (url) => set({ resultImageUrl: url, resultTs: url ? Date.now() : 0 }),
   setJobId: (id) => set({ jobId: id }),
   setError: (e) => set({ error: e }),
 }))

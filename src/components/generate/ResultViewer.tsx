@@ -16,7 +16,7 @@ async function downloadImage(imageUrl: string, filename: string) {
 }
 
 export function ResultViewer() {
-  const { generating, resultImageUrl, error } = useGenerateStore()
+  const { generating, resultImageUrl, resultTs, error } = useGenerateStore()
 
   if (!generating && !resultImageUrl && !error) {
     return (
@@ -45,7 +45,7 @@ export function ResultViewer() {
 
   return (
     <div className="relative overflow-hidden aspect-square border-2 border-black">
-      <img src={`${outputBaseURL}${resultImageUrl}?t=${Date.now()}`} alt="Generated" className="w-full h-full object-cover" />
+      <img src={`${outputBaseURL}${resultImageUrl}?t=${resultTs}`} alt="Generated" className="w-full h-full object-cover" />
       <button
         onClick={() => downloadImage(resultImageUrl!, 'whisk.png')}
         className="absolute bottom-3 right-3 border-2 border-black bg-white text-black text-xs px-4 py-2 font-mono uppercase tracking-widest transition-all hover:bg-black hover:text-white font-bold"
