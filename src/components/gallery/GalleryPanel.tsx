@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { RefreshCw, Download, GalleryHorizontal, ExternalLink } from 'lucide-react'
+import { RefreshCw, Download, GalleryHorizontal, ExternalLink, MessageSquare } from 'lucide-react'
 import { getImages } from '../../api/images'
 import type { ImageHistoryItem } from '../../api/images'
 import { outputBaseURL } from '../../api/client'
+import { ImageChatPanel } from './ImageChatPanel'
 
 function SkeletonCard() {
   return (
@@ -41,6 +42,7 @@ export function GalleryPanel() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [downloadingId, setDownloadingId] = useState<string | null>(null)
+  const [chatImage, setChatImage] = useState<ImageHistoryItem | null>(null)
 
   const fetchImages = async () => {
     setLoading(true)
@@ -71,6 +73,8 @@ export function GalleryPanel() {
   }
 
   return (
+    <>
+    {chatImage && <ImageChatPanel image={chatImage} onClose={() => setChatImage(null)} />}
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
@@ -123,24 +127,30 @@ export function GalleryPanel() {
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
-                  <div className="flex items-center gap-1.5">
-                    <a
-                      href={`${outputBaseURL}${item.url}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-1 bg-black/70 backdrop-blur-sm hover:bg-black/90 text-slate-200 text-xs font-medium py-1.5 rounded-lg transition-colors border border-white/[0.08]"
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setChatImage(item)}
+                      className="flex-1 flex items-center justify-center gap-1 bg-violet-600/80 hover:bg-violet-600 text-white text-xs font-medium py-1.5 rounded-lg transition-colors backdrop-blur-sm"
                     >
-                      <ExternalLink className="w-3 h-3" />
-                      열기
-                    </a>
+                      <MessageSquare className="w-3 h-3" />
+                      리파인
+                    </button>
                     <button
                       onClick={() => handleDownload(item)}
                       disabled={downloadingId === item.id}
-                      className="flex-1 flex items-center justify-center gap-1 bg-violet-600/80 hover:bg-violet-600 text-white text-xs font-medium py-1.5 rounded-lg transition-colors disabled:opacity-60 backdrop-blur-sm"
+                      className="flex-1 flex items-center justify-center gap-1 bg-black/70 backdrop-blur-sm hover:bg-black/90 text-slate-200 text-xs font-medium py-1.5 rounded-lg transition-colors disabled:opacity-60 border border-white/[0.08]"
                     >
                       <Download className="w-3 h-3" />
                       {downloadingId === item.id ? '...' : '저장'}
                     </button>
+                    <a
+                      href={`${outputBaseURL}${item.url}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center bg-black/70 backdrop-blur-sm hover:bg-black/90 text-slate-400 hover:text-slate-200 p-1.5 rounded-lg transition-colors border border-white/[0.08]"
+                    >
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
                   </div>
                 </div>
 
@@ -155,5 +165,6 @@ export function GalleryPanel() {
         </>
       )}
     </div>
+    </>
   )
 }
