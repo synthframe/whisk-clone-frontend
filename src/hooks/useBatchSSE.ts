@@ -10,7 +10,14 @@ export function useBatchSSE(batchId: string | null) {
   useEffect(() => {
     if (!batchId) return
 
-    const es = new EventSource(`${outputBaseURL}/api/batch/${batchId}/stream`)
+    const stored = localStorage.getItem('whisk-auth')
+    let token = ''
+    try {
+      const { state } = JSON.parse(stored ?? '{}')
+      token = state?.token ?? ''
+    } catch {}
+
+    const es = new EventSource(`${outputBaseURL}/api/batch/${batchId}/stream?token=${encodeURIComponent(token)}`)
 
     es.onmessage = (e) => {
       try {
