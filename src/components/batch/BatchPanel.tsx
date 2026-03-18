@@ -38,7 +38,12 @@ export function BatchPanel() {
           setLoading(false)
           return
         }
-        jobs = prompts.map((p) => ({ subject_prompt: p, scene_prompt: '', style_prompt: '', style_preset: '' }))
+        jobs = prompts.map((p) => ({
+          subject_prompt: p,
+          scene_prompt: slots.scene.prompt,
+          style_prompt: slots.style.prompt,
+          style_preset: selectedPreset,
+        }))
       } else {
         const baseJob: BatchJobInput = {
           subject_prompt: slots.subject.prompt,
