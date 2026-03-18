@@ -6,7 +6,7 @@ import { outputBaseURL } from '../../api/client'
 
 function SkeletonCard() {
   return (
-    <div className="aspect-square rounded-xl bg-gray-100 animate-pulse" />
+    <div className="aspect-square rounded-xl skeleton" />
   )
 }
 
@@ -74,13 +74,13 @@ export function GalleryPanel() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-semibold text-gray-900">이미지 갤러리</h2>
-          <p className="text-xs text-gray-400 mt-0.5">내가 생성한 이미지 목록</p>
+          <h2 className="text-base font-semibold text-slate-100">이미지 갤러리</h2>
+          <p className="text-xs text-slate-500 mt-0.5">내가 생성한 이미지 목록</p>
         </div>
         <button
           onClick={fetchImages}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-600 hover:border-indigo-300 hover:text-indigo-600 transition-colors disabled:opacity-40"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-transparent border border-white/[0.08] text-sm text-slate-400 hover:border-white/[0.18] hover:text-slate-200 transition-colors disabled:opacity-40"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           새로고침
@@ -88,7 +88,7 @@ export function GalleryPanel() {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl px-4 py-3">
           {error}
         </div>
       )}
@@ -101,26 +101,26 @@ export function GalleryPanel() {
         </div>
       ) : images.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center">
-            <GalleryHorizontal className="w-8 h-8 text-gray-300" />
+          <div className="w-16 h-16 rounded-2xl bg-[#141418] border border-white/[0.08] flex items-center justify-center">
+            <GalleryHorizontal className="w-8 h-8 text-slate-700" />
           </div>
           <div className="text-center">
-            <p className="text-sm font-medium text-gray-500">아직 생성된 이미지가 없습니다</p>
-            <p className="text-xs text-gray-400 mt-1">이미지를 생성하면 여기에 표시됩니다</p>
+            <p className="text-sm font-medium text-slate-500">아직 생성된 이미지가 없습니다</p>
+            <p className="text-xs text-slate-600 mt-1">이미지를 생성하면 여기에 표시됩니다</p>
           </div>
         </div>
       ) : (
         <>
-          <p className="text-xs text-gray-400">{images.length}개의 이미지</p>
+          <p className="text-xs text-slate-600">{images.length}개의 이미지</p>
           <div className="grid grid-cols-3 gap-3">
             {images.map((item) => (
-              <div key={item.id} className="group relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-sm">
+              <div key={item.id} className="group relative aspect-square rounded-xl overflow-hidden bg-[#141418] border border-white/[0.06]">
                 <img
                   src={`${outputBaseURL}${item.url}`}
                   alt=""
-                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-colors duration-200" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-2 translate-y-full group-hover:translate-y-0 transition-transform duration-200">
                   <div className="flex items-center gap-1.5">
@@ -128,7 +128,7 @@ export function GalleryPanel() {
                       href={`${outputBaseURL}${item.url}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-1 bg-white/90 hover:bg-white text-gray-800 text-xs font-medium py-1.5 rounded-lg transition-colors"
+                      className="flex-1 flex items-center justify-center gap-1 bg-black/70 backdrop-blur-sm hover:bg-black/90 text-slate-200 text-xs font-medium py-1.5 rounded-lg transition-colors border border-white/[0.08]"
                     >
                       <ExternalLink className="w-3 h-3" />
                       열기
@@ -136,7 +136,7 @@ export function GalleryPanel() {
                     <button
                       onClick={() => handleDownload(item)}
                       disabled={downloadingId === item.id}
-                      className="flex-1 flex items-center justify-center gap-1 bg-indigo-600/90 hover:bg-indigo-600 text-white text-xs font-medium py-1.5 rounded-lg transition-colors disabled:opacity-60"
+                      className="flex-1 flex items-center justify-center gap-1 bg-violet-600/80 hover:bg-violet-600 text-white text-xs font-medium py-1.5 rounded-lg transition-colors disabled:opacity-60 backdrop-blur-sm"
                     >
                       <Download className="w-3 h-3" />
                       {downloadingId === item.id ? '...' : '저장'}
@@ -145,7 +145,7 @@ export function GalleryPanel() {
                 </div>
 
                 <div className="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="text-xs text-white/80 bg-black/40 px-1.5 py-0.5 rounded-md">
+                  <span className="text-xs text-white/70 bg-black/60 backdrop-blur-sm px-1.5 py-0.5 rounded-md">
                     {formatDate(item.created_at)}
                   </span>
                 </div>

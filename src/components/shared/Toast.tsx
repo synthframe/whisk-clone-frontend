@@ -8,15 +8,9 @@ const ICONS = {
 }
 
 const STYLES = {
-  success: 'border-emerald-100 text-emerald-700 bg-white',
-  error: 'border-red-100 text-red-600 bg-white',
-  info: 'border-blue-100 text-blue-600 bg-white',
-}
-
-const ICON_STYLES = {
-  success: 'text-emerald-500',
-  error: 'text-red-500',
-  info: 'text-blue-500',
+  success: 'border-emerald-500/20 bg-[#1c1c23]/90 text-emerald-400',
+  error: 'border-red-500/20 bg-[#1c1c23]/90 text-red-400',
+  info: 'border-blue-500/20 bg-[#1c1c23]/90 text-blue-400',
 }
 
 export function ToastContainer() {
@@ -31,15 +25,15 @@ export function ToastContainer() {
         return (
           <div
             key={toast.id}
-            className={`flex items-center gap-3 border rounded-xl shadow-lg px-4 py-3 max-w-sm pointer-events-auto
-              animate-in slide-in-from-right-4 fade-in duration-200
+            className={`flex items-center gap-3 border rounded-xl shadow-2xl shadow-black/50 px-4 py-3 max-w-sm pointer-events-auto backdrop-blur-xl
+              animate-slide-in
               ${STYLES[toast.type]}`}
           >
-            <Icon className={`w-4 h-4 flex-shrink-0 ${ICON_STYLES[toast.type]}`} />
-            <span className="text-sm font-medium flex-1">{toast.message}</span>
+            <Icon className="w-4 h-4 flex-shrink-0" />
+            <span className="text-sm font-medium flex-1 text-slate-200">{toast.message}</span>
             <button
               onClick={() => removeToast(toast.id)}
-              className="text-gray-300 hover:text-gray-500 transition-colors ml-1"
+              className="text-slate-600 hover:text-slate-400 transition-colors ml-1"
             >
               <X className="w-3.5 h-3.5" />
             </button>

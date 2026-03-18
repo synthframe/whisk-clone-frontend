@@ -53,26 +53,26 @@ function BatchQueueItem({ batchId }: Props) {
   }
 
   const statusCls =
-    job.status === 'completed' ? 'bg-emerald-50 text-emerald-700' :
-    job.status === 'running' ? 'bg-indigo-50 text-indigo-700' :
-    'bg-gray-50 text-gray-500'
+    job.status === 'completed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+    job.status === 'running' ? 'bg-violet-500/10 text-violet-400 border-violet-500/20' :
+    'bg-white/[0.04] text-slate-500 border-white/[0.08]'
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 space-y-4">
+    <div className="bg-[#141418] rounded-2xl border border-white/[0.08] p-4 space-y-4">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-gray-400 font-mono">{batchId.slice(0, 8)}...</span>
+        <span className="text-xs text-slate-600 font-mono">{batchId.slice(0, 8)}...</span>
         <div className="flex items-center gap-2">
           {job.status === 'completed' && completedUrls.length > 0 && (
             <button
               onClick={handleDownloadAll}
               disabled={downloading}
-              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-600 transition-colors disabled:opacity-40 font-medium"
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-[#1c1c23] border border-white/[0.08] text-slate-400 hover:border-violet-500/40 hover:text-slate-200 transition-colors disabled:opacity-40 font-medium"
             >
               <Archive className="w-3.5 h-3.5" />
               {downloading ? '...' : `ZIP (${completedUrls.length})`}
             </button>
           )}
-          <span className={`text-xs font-medium px-2.5 py-1 rounded-lg ${statusCls}`}>
+          <span className={`text-xs font-medium px-2.5 py-1 rounded-lg border ${statusCls}`}>
             {job.status}
           </span>
         </div>
@@ -92,8 +92,8 @@ export function BatchQueue() {
 
   if (jobs.length === 0) {
     return (
-      <div className="h-64 rounded-xl bg-white border border-gray-100 flex items-center justify-center">
-        <p className="text-sm text-gray-400">배치 작업이 여기에 표시됩니다</p>
+      <div className="h-64 rounded-2xl bg-[#141418] border border-white/[0.08] flex items-center justify-center">
+        <p className="text-sm text-slate-600">배치 작업이 여기에 표시됩니다</p>
       </div>
     )
   }
