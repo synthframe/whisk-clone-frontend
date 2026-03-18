@@ -71,56 +71,54 @@ export default function App() {
         )}
 
         {mode === 'batch' && (
-          <div className="space-y-4">
-            {/* Slots — editable, same as single mode */}
-            <SlotGrid />
+          <div className="flex flex-col lg:grid lg:grid-cols-[1fr_360px] gap-8">
+            {/* Left: slots + controls + queue — same width as single mode */}
+            <div className="space-y-4">
+              <SlotGrid />
 
-            {/* Controls card: style + ratio — same as single mode */}
-            <div className="bg-[#141418] rounded-2xl border border-white/[0.08] divide-y divide-white/[0.06]">
-              <div className="p-4">
-                <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-widest mb-3">스타일</p>
-                <StylePresets />
-              </div>
-              <div className="p-4">
-                <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-widest mb-3">비율</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {RATIOS.map((r) => (
-                    <button
-                      key={r}
-                      onClick={() => setRatio(r)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-                        selectedRatio === r
-                          ? 'bg-violet-600/20 text-violet-300 border-violet-500/50'
-                          : 'bg-transparent text-slate-500 border-white/[0.08] hover:border-white/[0.18] hover:text-slate-300'
-                      }`}
-                    >
-                      {r}
-                    </button>
-                  ))}
+              <div className="bg-[#141418] rounded-2xl border border-white/[0.08] divide-y divide-white/[0.06]">
+                <div className="p-4">
+                  <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-widest mb-3">스타일</p>
+                  <StylePresets />
+                </div>
+                <div className="p-4">
+                  <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-widest mb-3">비율</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {RATIOS.map((r) => (
+                      <button
+                        key={r}
+                        onClick={() => setRatio(r)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
+                          selectedRatio === r
+                            ? 'bg-violet-600/20 text-violet-300 border-violet-500/50'
+                            : 'bg-transparent text-slate-500 border-white/[0.08] hover:border-white/[0.18] hover:text-slate-300'
+                        }`}
+                      >
+                        {r}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
+
+              {jobs.length > 0 ? (
+                <BatchQueue />
+              ) : (
+                <div className="h-48 rounded-2xl bg-[#141418] border border-white/[0.08] flex flex-col items-center justify-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-[#1c1c23] border border-white/[0.06] flex items-center justify-center">
+                    <Layers className="w-6 h-6 text-slate-700" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-slate-500">배치 작업이 여기에 표시됩니다</p>
+                    <p className="text-xs text-slate-600 mt-1">우측에서 배치를 시작하세요</p>
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Batch controls + queue */}
-            <div className="flex flex-col lg:grid lg:grid-cols-[360px_1fr] gap-8">
-              <div>
-                <BatchPanel />
-              </div>
-              <div>
-                {jobs.length > 0 ? (
-                  <BatchQueue />
-                ) : (
-                  <div className="h-64 rounded-2xl bg-[#141418] border border-white/[0.08] flex flex-col items-center justify-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-[#1c1c23] border border-white/[0.06] flex items-center justify-center">
-                      <Layers className="w-6 h-6 text-slate-700" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-slate-500">배치 작업이 여기에 표시됩니다</p>
-                      <p className="text-xs text-slate-600 mt-1">좌측에서 배치를 시작하세요</p>
-                    </div>
-                  </div>
-                )}
-              </div>
+            {/* Right: batch panel — sticky like ResultViewer */}
+            <div className="lg:sticky lg:top-20 lg:self-start">
+              <BatchPanel />
             </div>
           </div>
         )}
