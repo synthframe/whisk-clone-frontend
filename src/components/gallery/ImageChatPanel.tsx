@@ -52,6 +52,8 @@ export function ImageChatPanel({ image, onClose }: Props) {
     width: image.width || 1024,
     height: image.height || 1024,
   })
+  // Track the latest image URL to use as img2img reference
+  const [currentImageUrl, setCurrentImageUrl] = useState(image.url)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -80,6 +82,7 @@ export function ImageChatPanel({ image, onClose }: Props) {
         width: currentPrompts.width,
         height: currentPrompts.height,
         feedback,
+        original_url: currentImageUrl,
       })
 
       setCurrentPrompts((prev) => ({
@@ -88,6 +91,7 @@ export function ImageChatPanel({ image, onClose }: Props) {
         scene: result.scene_prompt,
         style: result.style_prompt,
       }))
+      setCurrentImageUrl(result.image_url)
 
       setMessages((prev) => [
         ...prev,

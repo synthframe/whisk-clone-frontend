@@ -8,6 +8,7 @@ export interface RefineRequest {
   width: number
   height: number
   feedback: string
+  original_url: string
 }
 
 export interface RefineResponse {
