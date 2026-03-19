@@ -4,7 +4,8 @@ import { SlotGrid } from './components/slots/SlotGrid'
 import { StylePresets } from './components/styles/StylePresets'
 import { GenerateButton } from './components/generate/GenerateButton'
 import { ResultViewer } from './components/generate/ResultViewer'
-import { BatchPanel } from './components/batch/BatchPanel'
+import { BatchPromptSection } from './components/batch/BatchPromptSection'
+import { BatchRunSection } from './components/batch/BatchRunSection'
 import { BatchQueue } from './components/batch/BatchQueue'
 import { GalleryPanel } from './components/gallery/GalleryPanel'
 import { ToastContainer } from './components/shared/Toast'
@@ -30,7 +31,7 @@ function SectionLabel({ step, label }: { step: number; label: string }) {
 export default function App() {
   const [mode, setMode] = useState<'single' | 'batch' | 'gallery'>('single')
   const { selectedRatio, setRatio, mainPrompt, setMainPrompt } = useGenerateStore()
-  const { jobs } = useBatchStore()
+  const batchJobs = useBatchStore((s) => s.jobs)
 
   const ratioButtons = (
     <div className="flex flex-wrap gap-2.5">
@@ -134,19 +135,23 @@ export default function App() {
 
         {mode === 'batch' && (
           <div className="flex flex-col lg:grid lg:grid-cols-[1fr_420px] gap-8">
-            {/* Left: 슬롯 → 배치 설정 → 스타일/비율 */}
+            {/* Left: 프롬프트 → 슬롯 → 스타일/비율 → 생성 */}
             <div className="space-y-8">
               <div>
-                <SectionLabel step={1} label="슬롯 설정" />
-                <SlotGrid />
+                <SectionLabel step={1} label="배치 프롬프트" />
+                <BatchPromptSection />
               </div>
               <div>
-                <SectionLabel step={2} label="배치 생성 설정" />
-                <BatchPanel />
+                <SectionLabel step={2} label="슬롯 설정" />
+                <SlotGrid />
               </div>
               <div>
                 <SectionLabel step={3} label="스타일 · 비율" />
                 {styleRatioCard}
+              </div>
+              <div>
+                <SectionLabel step={4} label="생성" />
+                <BatchRunSection />
               </div>
             </div>
 
@@ -160,7 +165,7 @@ export default function App() {
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">배치 결과</p>
                   <div className="flex-1 h-px bg-white/[0.05]" />
                 </div>
-                {jobs.length > 0 ? (
+                {batchJobs.length > 0 ? (
                   <BatchQueue />
                 ) : (
                   <div className="h-64 rounded-2xl bg-[#141418] border border-white/[0.07] flex flex-col items-center justify-center gap-4">
