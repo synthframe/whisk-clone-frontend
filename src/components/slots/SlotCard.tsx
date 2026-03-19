@@ -61,20 +61,20 @@ export function SlotCard({ type, inputMode, onModeChange }: Props) {
     }`}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.05] bg-[#111115]">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${cfg.accent}`} />
+        <div className="flex items-center gap-3 min-w-0">
+          <div className={`w-3 h-3 rounded-full flex-shrink-0 ${cfg.accent}`} />
           <div className="min-w-0">
-            <p className="text-sm font-bold text-slate-100">{cfg.label}</p>
-            <p className="text-xs text-slate-600 truncate mt-0.5">{cfg.desc}</p>
+            <p className="text-base font-bold text-slate-100 leading-tight">{cfg.label}</p>
+            <p className="text-xs text-slate-500 mt-0.5">{cfg.desc}</p>
           </div>
         </div>
         {/* Mode toggle */}
-        <div className="flex bg-[#0c0c0f] rounded-xl p-1 gap-1 flex-shrink-0 ml-3">
+        <div className="flex bg-[#0c0c0f] rounded-xl p-1 gap-1 flex-shrink-0 ml-3 border border-white/[0.05]">
           <button
             onClick={() => onModeChange('image')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
               inputMode === 'image'
-                ? 'bg-white/[0.1] text-slate-100 shadow-sm'
+                ? 'bg-white/[0.12] text-slate-100 shadow-sm'
                 : 'text-slate-600 hover:text-slate-300'
             }`}
           >
@@ -83,9 +83,9 @@ export function SlotCard({ type, inputMode, onModeChange }: Props) {
           </button>
           <button
             onClick={() => onModeChange('text')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
               inputMode === 'text'
-                ? 'bg-white/[0.1] text-slate-100 shadow-sm'
+                ? 'bg-white/[0.12] text-slate-100 shadow-sm'
                 : 'text-slate-600 hover:text-slate-300'
             }`}
           >
@@ -100,7 +100,7 @@ export function SlotCard({ type, inputMode, onModeChange }: Props) {
         {inputMode === 'image' ? (
           <div className="space-y-3">
             <div
-              className="relative h-44 rounded-xl overflow-hidden bg-[#0f0f13] border border-white/[0.06] hover:border-violet-500/30 transition-all cursor-pointer"
+              className="relative h-56 rounded-xl overflow-hidden bg-[#0f0f13] border border-white/[0.06] hover:border-violet-500/30 transition-all cursor-pointer"
               onClick={() => !slot.preview && fileRef.current?.click()}
               onDrop={handleDrop}
               onDragOver={e => e.preventDefault()}
@@ -161,7 +161,7 @@ export function SlotCard({ type, inputMode, onModeChange }: Props) {
               value={slot.prompt}
               onChange={e => useSlotStore.getState().setSlot(type, { prompt: e.target.value })}
               placeholder={cfg.placeholder}
-              className={`w-full h-44 resize-none rounded-xl bg-[#0f0f13] border border-white/[0.06] text-sm p-4 pb-10 text-slate-200 placeholder-slate-600 focus:outline-none ${cfg.focus} transition-colors leading-relaxed`}
+              className={`w-full h-56 resize-none rounded-xl bg-[#0f0f13] border border-white/[0.06] text-base p-4 pb-10 text-slate-200 placeholder-slate-600 focus:outline-none ${cfg.focus} transition-colors leading-relaxed`}
             />
             <div className="absolute bottom-3.5 left-4 right-4 flex items-center justify-between">
               <span className="text-[11px] text-slate-700">{cfg.desc}</span>
