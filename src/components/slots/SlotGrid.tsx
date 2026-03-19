@@ -16,7 +16,7 @@ export function SlotGrid() {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {SLOTS.map((type) => (
         <SlotCard
           key={type}

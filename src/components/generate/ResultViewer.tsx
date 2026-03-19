@@ -32,7 +32,7 @@ export function ResultViewer() {
 
   if (!generating && !resultImageUrl && !error) {
     return (
-      <div className="min-h-[300px] lg:min-h-[460px] rounded-2xl bg-[#141418] border border-white/[0.06] flex flex-col items-center justify-center gap-4 p-6">
+      <div className="min-h-[340px] lg:min-h-[520px] rounded-2xl bg-[#141418] border border-white/[0.06] flex flex-col items-center justify-center gap-4 p-8">
         <div className="w-16 h-16 rounded-2xl bg-[#0f0f13] border border-white/[0.06] flex items-center justify-center">
           <ImageIcon className="w-8 h-8 text-slate-700" />
         </div>
@@ -59,7 +59,7 @@ export function ResultViewer() {
 
   if (generating) {
     return (
-      <div className="min-h-[300px] lg:min-h-[460px] rounded-2xl bg-[#141418] border border-violet-500/20 flex flex-col items-center justify-center gap-5">
+      <div className="min-h-[340px] lg:min-h-[520px] rounded-2xl bg-[#141418] border border-violet-500/20 flex flex-col items-center justify-center gap-5">
         <div className="relative w-14 h-14">
           <div className="w-14 h-14 rounded-full border-2 border-violet-500/20 border-t-violet-400 animate-spin" />
           <div className="absolute inset-3 rounded-full bg-violet-500/10 animate-pulse" />
@@ -74,7 +74,7 @@ export function ResultViewer() {
 
   if (error) {
     return (
-      <div className="min-h-[300px] lg:min-h-[460px] rounded-2xl bg-[#141418] border border-red-500/20 flex flex-col items-center justify-center p-6 gap-4">
+      <div className="min-h-[340px] lg:min-h-[520px] rounded-2xl bg-[#141418] border border-red-500/20 flex flex-col items-center justify-center p-8 gap-4">
         <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
           <svg className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
@@ -98,7 +98,7 @@ export function ResultViewer() {
   const hasPrompts = slots.subject.prompt || slots.scene.prompt || slots.style.prompt
 
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-3">
       <div className="relative aspect-square rounded-2xl overflow-hidden group animate-fade-in bg-[#141418]">
         <img
           src={`${outputBaseURL}${resultImageUrl}?t=${resultTs}`}
@@ -108,7 +108,7 @@ export function ResultViewer() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
         <button
           onClick={handleDownload}
-          className="absolute bottom-3 right-3 flex items-center gap-1.5 bg-black/80 backdrop-blur-sm hover:bg-black text-white text-xs font-medium px-3 py-2 rounded-xl transition-all opacity-0 group-hover:opacity-100 border border-white/[0.1] shadow-lg"
+          className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-black/80 backdrop-blur-sm hover:bg-black text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all opacity-0 group-hover:opacity-100 border border-white/[0.1] shadow-lg"
         >
           <Download className="w-3.5 h-3.5" />
           다운로드

@@ -14,7 +14,7 @@ export function GenerateButton() {
     <button
       onClick={generate}
       disabled={generating}
-      className={`w-full flex items-center justify-center gap-2.5 text-white font-semibold py-4 rounded-xl text-base transition-all ${
+      className={`w-full flex items-center justify-center gap-3 text-white font-bold py-5 rounded-2xl text-base transition-all ${
         generating
           ? 'bg-violet-700/60 cursor-not-allowed shadow-none'
           : 'bg-gradient-to-r from-violet-600 to-purple-500 hover:from-violet-500 hover:to-purple-400 shadow-lg shadow-violet-900/40 hover:shadow-violet-900/60 active:scale-[0.99]'
