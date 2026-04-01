@@ -2,56 +2,34 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
+html {
+  color-scheme: dark;
+}
+
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #0c0c0f;
-  color: #f1f5f9;
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(34, 211, 238, 0.14), transparent 30%),
+    linear-gradient(180deg, #08101f 0%, #050914 100%);
+  color: #f8fafc;
   -webkit-font-smoothing: antialiased;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(16px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
-@keyframes slideInFromRight {
-  from { opacity: 0; transform: translateX(1rem); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes slideInPanel {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+img {
+  display: block;
 }
 
-.animate-fade-in { animation: fadeIn 0.3s ease-out; }
-.animate-slide-in { animation: slideIn 0.3s ease-out; }
-.animate-slide-in-panel { animation: slideInPanel 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-.skeleton {
-  background: linear-gradient(90deg, #1c1c23 25%, #23232d 50%, #1c1c23 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-.animate-in {
-  animation-fill-mode: both;
-}
-
-.slide-in-from-right-4 {
-  animation-name: slideInFromRight;
-}
-
-.fade-in {
-  animation-name: fadeIn;
-}
-
-.duration-200 {
-  animation-duration: 200ms;
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
