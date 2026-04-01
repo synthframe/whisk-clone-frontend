@@ -9,7 +9,6 @@ type CharacterSet = {
   id: string
   name: string
   description: string
-  global_style: string
   references: CharacterReference[]
 }
 
@@ -51,7 +50,6 @@ export default function App() {
   const [selectedSetId, setSelectedSetId] = useState('')
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [setStyle, setSetStyle] = useState('')
   const [batchTitle, setBatchTitle] = useState('')
   const [batchStyle, setBatchStyle] = useState('')
   const [promptsText, setPromptsText] = useState('')
@@ -118,7 +116,6 @@ export default function App() {
       const formData = new FormData()
       formData.append('name', name)
       formData.append('description', description)
-      formData.append('global_style', setStyle)
       files.forEach((file) => formData.append('references', file))
 
       const created = await fetchJSON<CharacterSet>('/character-sets', {
@@ -130,7 +127,6 @@ export default function App() {
       setSelectedSetId(created.id)
       setName('')
       setDescription('')
-      setSetStyle('')
       setFiles([])
     } catch (err) {
       setError(err instanceof Error ? err.message : 'failed to create character set')
@@ -209,16 +205,6 @@ export default function App() {
                     onChange={(event) => setDescription(event.target.value)}
                     placeholder="얼굴, 헤어, 분위기, 체형, 의상 톤"
                     className="mt-2 h-24 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
-                  />
-                </label>
-
-                <label className="block text-sm text-slate-300">
-                  전역 스타일
-                  <textarea
-                    value={setStyle}
-                    onChange={(event) => setSetStyle(event.target.value)}
-                    placeholder="bright editorial portrait, clean commercial lighting"
-                    className="mt-2 h-20 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
                   />
                 </label>
 
