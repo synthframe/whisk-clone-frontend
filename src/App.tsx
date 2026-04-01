@@ -34,7 +34,8 @@ type BatchJob = {
   items: BatchItem[]
 }
 
-const apiBase = `${import.meta.env.VITE_API_BASE_URL ?? 'https://synthframeapi.dsmhs.kr'}/api`
+const apiHost = import.meta.env.VITE_API_BASE_URL ?? 'https://synthframeapi.dsmhs.kr'
+const apiBase = `${apiHost}/api`
 
 async function fetchJSON<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBase}${path}`, init)
@@ -170,250 +171,212 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0b1020] text-slate-100">
-      <div className="mx-auto flex max-w-[1500px] flex-col gap-8 px-6 py-8 lg:px-10">
-        <header className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300/80">Synthframe</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight">Character set batch studio</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
-            캐릭터셋을 만들고, 선택한 캐릭터셋 기준으로 프롬프트 묶음을 한 번에 배치 생성합니다.
-            전역 스타일은 각 배치 전체에 공통으로 적용됩니다.
+      <div className="mx-auto max-w-[1200px] px-4 py-6 lg:px-8">
+        <header className="mb-6 border-b border-white/10 pb-4">
+          <p className="text-sm font-medium text-cyan-300">Synthframe</p>
+          <h1 className="mt-2 text-3xl font-semibold">캐릭터셋 배치 생성</h1>
+          <p className="mt-2 text-sm text-slate-400">
+            캐릭터셋을 만든 뒤 프롬프트 묶음을 넣으면 같은 캐릭터 기준으로 배치 생성합니다.
           </p>
         </header>
 
         {error && (
-          <div className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
+          <div className="mb-6 rounded-xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-100">
             {error}
           </div>
         )}
 
-        <div className="grid gap-8 xl:grid-cols-[420px_minmax(0,1fr)_460px]">
-          <section className="rounded-[28px] border border-white/10 bg-[#10172a] p-6 shadow-2xl shadow-black/20">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Step 1</p>
-                <h2 className="mt-2 text-2xl font-semibold">Character set</h2>
-              </div>
-              <span className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-xs text-cyan-200">
-                refs {files.length}
-              </span>
-            </div>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+          <div className="space-y-6">
+            <section className="rounded-xl border border-white/10 bg-[#10172a] p-5">
+              <h2 className="text-lg font-semibold">1. 캐릭터셋 만들기</h2>
+              <form className="mt-4 space-y-4" onSubmit={handleCreateCharacterSet}>
+                <label className="block text-sm text-slate-300">
+                  이름
+                  <input
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="예: Mina episode pack"
+                    className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
+                    required
+                  />
+                </label>
 
-            <form className="space-y-4" onSubmit={handleCreateCharacterSet}>
-              <label className="block text-sm text-slate-300">
-                이름
-                <input
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="예: Mina episode pack"
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
-                  required
-                />
-              </label>
+                <label className="block text-sm text-slate-300">
+                  캐릭터 설명
+                  <textarea
+                    value={description}
+                    onChange={(event) => setDescription(event.target.value)}
+                    placeholder="얼굴, 헤어, 분위기, 체형, 의상 톤"
+                    className="mt-2 h-24 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
+                  />
+                </label>
 
-              <label className="block text-sm text-slate-300">
-                캐릭터 설명
-                <textarea
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                  placeholder="얼굴 인상, 헤어, 분위기, 의상 톤 등"
-                  className="mt-2 h-28 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
-                />
-              </label>
+                <label className="block text-sm text-slate-300">
+                  전역 스타일
+                  <textarea
+                    value={setStyle}
+                    onChange={(event) => setSetStyle(event.target.value)}
+                    placeholder="bright editorial portrait, clean commercial lighting"
+                    className="mt-2 h-20 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
+                  />
+                </label>
 
-              <label className="block text-sm text-slate-300">
-                전역 스타일
-                <textarea
-                  value={setStyle}
-                  onChange={(event) => setSetStyle(event.target.value)}
-                  placeholder="clean commercial lighting, premium fashion editorial, shallow depth of field"
-                  className="mt-2 h-24 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
-                />
-              </label>
+                <label className="block text-sm text-slate-300">
+                  레퍼런스 이미지
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={(event) => setFiles(Array.from(event.target.files ?? []))}
+                    className="mt-2 block w-full rounded-xl border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm text-slate-300"
+                  />
+                </label>
 
-              <label className="block text-sm text-slate-300">
-                레퍼런스 이미지
-                <input
-                  type="file"
-                  multiple
-                  accept="image/png,image/jpeg,image/webp"
-                  onChange={(event) => setFiles(Array.from(event.target.files ?? []))}
-                  className="mt-2 block w-full rounded-2xl border border-dashed border-white/15 bg-white/5 px-4 py-3 text-sm text-slate-300"
-                />
-              </label>
-
-              {files.length > 0 && (
-                <div className="grid grid-cols-3 gap-3">
-                  {files.map((file) => (
-                    <div key={file.name} className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300">
-                      {file.name}
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={submittingSet}
-                className="w-full rounded-2xl bg-cyan-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {submittingSet ? '생성 중...' : '캐릭터셋 만들기'}
-              </button>
-            </form>
-          </section>
-
-          <section className="rounded-[28px] border border-white/10 bg-[#10172a] p-6 shadow-2xl shadow-black/20">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Step 2</p>
-                <h2 className="mt-2 text-2xl font-semibold">Batch generation</h2>
-              </div>
-              <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-slate-300">
-                prompts {parsedPrompts.length}
-              </span>
-            </div>
-
-            <div className="space-y-5">
-              <div>
-                <p className="mb-3 text-sm font-medium text-slate-300">캐릭터셋 선택</p>
-                <div className="grid gap-3 md:grid-cols-2">
-                  {loadingSets && <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">로딩 중...</div>}
-                  {!loadingSets && characterSets.length === 0 && (
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">
-                      먼저 캐릭터셋을 만들어야 합니다.
-                    </div>
-                  )}
-                  {characterSets.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setSelectedSetId(item.id)}
-                      className={`rounded-2xl border p-4 text-left transition ${
-                        selectedSetId === item.id
-                          ? 'border-cyan-300/60 bg-cyan-400/10'
-                          : 'border-white/10 bg-white/5 hover:border-white/25'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="font-medium text-slate-100">{item.name}</p>
-                        <span className="text-xs text-slate-400">refs {item.references.length}</span>
+                {files.length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                    {files.map((file) => (
+                      <div key={file.name} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-slate-300">
+                        {file.name}
                       </div>
-                      <p className="mt-2 line-clamp-3 text-sm text-slate-400">{item.description || '설명 없음'}</p>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                    ))}
+                  </div>
+                )}
 
-              {selectedSet && (
-                <div className="rounded-3xl border border-white/10 bg-black/20 p-4">
-                  <p className="text-sm font-medium text-slate-200">선택된 캐릭터셋</p>
-                  <p className="mt-1 text-sm text-slate-400">{selectedSet.name}</p>
-                  <p className="mt-3 text-xs uppercase tracking-[0.2em] text-slate-500">Reference gallery</p>
-                  <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
-                    {selectedSet.references.map((reference) => (
-                      <img
-                        key={reference.id}
-                        src={`${import.meta.env.VITE_API_BASE_URL ?? 'https://synthframeapi.dsmhs.kr'}${reference.image_url}`}
-                        className="aspect-square w-full rounded-2xl object-cover"
-                        loading="lazy"
-                      />
+                <button
+                  type="submit"
+                  disabled={submittingSet}
+                  className="w-full rounded-xl bg-cyan-300 px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {submittingSet ? '생성 중...' : '캐릭터셋 만들기'}
+                </button>
+              </form>
+            </section>
+
+            <section className="rounded-xl border border-white/10 bg-[#10172a] p-5">
+              <h2 className="text-lg font-semibold">2. 배치 생성</h2>
+
+              <div className="mt-4 space-y-4">
+                <div>
+                  <p className="mb-3 text-sm font-medium text-slate-300">캐릭터셋 선택</p>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {loadingSets && <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">로딩 중...</div>}
+                    {!loadingSets && characterSets.length === 0 && (
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-400">
+                        먼저 캐릭터셋을 만들어야 합니다.
+                      </div>
+                    )}
+                    {characterSets.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setSelectedSetId(item.id)}
+                        className={`rounded-xl border p-4 text-left transition ${
+                          selectedSetId === item.id
+                            ? 'border-cyan-300/60 bg-cyan-400/10'
+                            : 'border-white/10 bg-white/5 hover:border-white/25'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <p className="font-medium text-slate-100">{item.name}</p>
+                          <span className="text-xs text-slate-400">{item.references.length} refs</span>
+                        </div>
+                        <p className="mt-2 line-clamp-3 text-sm text-slate-400">{item.description || '설명 없음'}</p>
+                      </button>
                     ))}
                   </div>
                 </div>
-              )}
 
-              <label className="block text-sm text-slate-300">
-                배치 이름
-                <input
-                  value={batchTitle}
-                  onChange={(event) => setBatchTitle(event.target.value)}
-                  placeholder="예: Episode 03 shots"
-                  className="mt-2 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
-                />
-              </label>
+                {selectedSet && (
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <p className="text-sm font-medium text-slate-200">{selectedSet.name}</p>
+                    <div className="mt-3 grid grid-cols-3 gap-3 md:grid-cols-5">
+                      {selectedSet.references.map((reference) => (
+                        <img
+                          key={reference.id}
+                          src={`${apiHost}${reference.image_url}`}
+                          className="aspect-square w-full rounded-xl object-cover"
+                          loading="lazy"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-              <label className="block text-sm text-slate-300">
-                배치 전역 스타일
-                <textarea
-                  value={batchStyle}
-                  onChange={(event) => setBatchStyle(event.target.value)}
-                  placeholder="bright romantic commercial photography, soft spring color grading"
-                  className="mt-2 h-24 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
-                />
-              </label>
+                <label className="block text-sm text-slate-300">
+                  배치 이름
+                  <input
+                    value={batchTitle}
+                    onChange={(event) => setBatchTitle(event.target.value)}
+                    placeholder="예: Episode 03 shots"
+                    className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
+                  />
+                </label>
 
-              <label className="block text-sm text-slate-300">
-                프롬프트 묶음
-                <textarea
-                  value={promptsText}
-                  onChange={(event) => setPromptsText(event.target.value)}
-                  placeholder={['1. close-up smile shot on rooftop', '2. medium shot in subway platform', '3. walking shot in rainy alley'].join('\n')}
-                  className="mt-2 h-72 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
-                />
-              </label>
+                <label className="block text-sm text-slate-300">
+                  배치 전역 스타일
+                  <textarea
+                    value={batchStyle}
+                    onChange={(event) => setBatchStyle(event.target.value)}
+                    placeholder="bright romantic commercial photography"
+                    className="mt-2 h-20 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
+                  />
+                </label>
 
-              <button
-                type="button"
-                disabled={submittingBatch || !selectedSetId || parsedPrompts.length === 0}
-                onClick={handleRunBatch}
-                className="w-full rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                {submittingBatch ? '배치 생성 시작 중...' : `배치 실행 (${parsedPrompts.length} prompts)`}
-              </button>
-            </div>
-          </section>
+                <label className="block text-sm text-slate-300">
+                  프롬프트 묶음
+                  <textarea
+                    value={promptsText}
+                    onChange={(event) => setPromptsText(event.target.value)}
+                    placeholder={['close-up smile shot on rooftop', 'medium shot in subway platform', 'walking shot in rainy alley'].join('\n')}
+                    className="mt-2 h-52 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition focus:border-cyan-300/60"
+                  />
+                </label>
 
-          <section className="rounded-[28px] border border-white/10 bg-[#10172a] p-6 shadow-2xl shadow-black/20">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase tracking-[0.3em] text-slate-400">Step 3</p>
-                <h2 className="mt-2 text-2xl font-semibold">Batch output</h2>
+                <button
+                  type="button"
+                  disabled={submittingBatch || !selectedSetId || parsedPrompts.length === 0}
+                  onClick={handleRunBatch}
+                  className="w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {submittingBatch ? '배치 생성 시작 중...' : `배치 실행 (${parsedPrompts.length})`}
+                </button>
               </div>
-              {activeBatch && (
-                <span className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200">
-                  {activeBatch.completed_count}/{activeBatch.total_count}
-                </span>
-              )}
-            </div>
+            </section>
+          </div>
+
+          <section className="rounded-xl border border-white/10 bg-[#10172a] p-5">
+            <h2 className="text-lg font-semibold">3. 결과</h2>
 
             {!activeBatch && (
-              <div className="rounded-3xl border border-dashed border-white/15 bg-white/5 p-8 text-sm leading-6 text-slate-400">
-                배치를 실행하면 각 프롬프트에 대한 생성 상태와 결과 이미지가 여기 표시됩니다.
+              <div className="mt-4 rounded-xl border border-dashed border-white/15 bg-white/5 p-6 text-sm text-slate-400">
+                배치를 실행하면 결과가 여기에 표시됩니다.
               </div>
             )}
 
             {activeBatch && (
-              <div className="space-y-4">
-                <div className="rounded-3xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="font-medium text-slate-100">{activeBatch.title || 'Untitled batch'}</p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-500">status {activeBatch.status}</p>
-                    </div>
-                    <div className="text-right text-xs text-slate-400">
-                      <p>done {activeBatch.completed_count}</p>
-                      <p>failed {activeBatch.failed_count}</p>
-                    </div>
-                  </div>
+              <div className="mt-4 space-y-4">
+                <div className="rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">
+                  <p className="font-medium text-slate-100">{activeBatch.title || 'Untitled batch'}</p>
+                  <p className="mt-1 text-xs text-slate-400">
+                    {activeBatch.status} · {activeBatch.completed_count}/{activeBatch.total_count} 완료 · {activeBatch.failed_count} 실패
+                  </p>
                 </div>
 
                 <div className="grid gap-4">
                   {activeBatch.items.map((item) => (
-                    <article key={item.id} className="overflow-hidden rounded-3xl border border-white/10 bg-white/5">
+                    <article key={item.id} className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
                       <div className="border-b border-white/10 px-4 py-3">
                         <div className="flex items-center justify-between gap-3">
                           <p className="text-sm font-medium text-slate-100">#{item.prompt_index}</p>
-                          <span className="text-xs uppercase tracking-[0.2em] text-slate-400">{item.status}</span>
+                          <span className="text-xs text-slate-400">{item.status}</span>
                         </div>
                         <p className="mt-2 text-sm leading-6 text-slate-300">{item.prompt_text}</p>
                         {item.error && <p className="mt-2 text-xs text-rose-300">{item.error}</p>}
                       </div>
 
                       {item.image_url ? (
-                        <img
-                          src={`${import.meta.env.VITE_API_BASE_URL ?? 'https://synthframeapi.dsmhs.kr'}${item.image_url}`}
-                          className="aspect-square w-full object-cover"
-                          loading="lazy"
-                        />
+                        <img src={`${apiHost}${item.image_url}`} className="aspect-square w-full object-cover" loading="lazy" />
                       ) : (
                         <div className="flex aspect-square items-center justify-center bg-slate-950/40 text-sm text-slate-500">
                           {item.status === 'failed' ? '생성 실패' : '생성 중...'}
