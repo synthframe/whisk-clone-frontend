@@ -9,6 +9,10 @@ export interface RefineRequest {
   height: number
   feedback: string
   original_url: string
+  history?: Array<{
+    role: 'user' | 'assistant'
+    content: string
+  }>
 }
 
 export interface RefineResponse {

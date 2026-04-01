@@ -22,6 +22,6 @@ export const useAuthStore = create<AuthStore>()(
       setAuth: (token, user) => set({ token, user }),
       logout: () => set({ token: null, user: null }),
     }),
-    { name: 'whisk-auth' }
+    { name: 'synthframe-auth' }
   )
 )

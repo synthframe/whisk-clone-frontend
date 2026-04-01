@@ -12,7 +12,7 @@ export function useBatchSSE(batchId: string | null) {
   useEffect(() => {
     if (!batchId) return
 
-    const stored = localStorage.getItem('whisk-auth')
+    const stored = localStorage.getItem('synthframe-auth')
     let token = ''
     try {
       const { state } = JSON.parse(stored ?? '{}')

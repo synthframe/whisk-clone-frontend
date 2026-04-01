@@ -13,6 +13,19 @@ interface ChatMessage {
   style_prompt?: string
 }
 
+function buildRefineHistory(messages: ChatMessage[], nextUserInput: string) {
+  const history = messages
+    .filter((message) => message.content.trim())
+    .slice(-6)
+    .map((message) => ({
+      role: message.role,
+      content: message.content.trim(),
+    }))
+
+  history.push({ role: 'user' as const, content: nextUserInput.trim() })
+  return history
+}
+
 interface Props {
   image: ImageHistoryItem
   onClose: () => void
@@ -83,6 +96,7 @@ export function ImageChatPanel({ image, onClose }: Props) {
         height: currentPrompts.height,
         feedback,
         original_url: currentImageUrl,
+        history: buildRefineHistory(messages, feedback),
       })
 
       setCurrentPrompts((prev) => ({

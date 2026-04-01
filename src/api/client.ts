@@ -1,13 +1,13 @@
 import axios from 'axios'
 
-const backendURL = 'https://whisk-backend.dsmhs.kr'
+const backendURL = 'https://synthframeapi.dsmhs.kr'
 
 export const client = axios.create({
   baseURL: `${backendURL}/api`,
 })
 
 client.interceptors.request.use((config) => {
-  const stored = localStorage.getItem('whisk-auth')
+  const stored = localStorage.getItem('synthframe-auth')
   if (stored) {
     try {
       const { state } = JSON.parse(stored)
